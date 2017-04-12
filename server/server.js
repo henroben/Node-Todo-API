@@ -41,3 +41,5 @@ let randomMsg = Math.round(Math.random() * (serverMsg.length - 1 - 0) + 0);
 app.listen(port, () => {
     console.log(serverMsg[randomMsg]);
 });
+
+module.exports = {app};
