@@ -1,54 +1,43 @@
 "use strict";
 
-let mongoose = require('mongoose');
+let express = require('express');
+let bodyParser = require('body-parser');
 
-mongoose.Promise = global.Promise; // set mongoose to use promises
-mongoose.connect('mongodb://localhost:27017/TodoApp'); // connect to mongo database
+let {mongoose} = require('./db/mongoose');
+let {Todo} = require('./models/todo');
+let {User} = require('./models/user');
 
-// create Todo model
-// let Todo = mongoose.model('Todo', {
-//     text: {
-//         type: String,
-//         required: true,
-//         minlength: 1,
-//         trim: true
-//     },
-//     completed: {
-//         type: Boolean,
-//         default: false
-//     },
-//     completedAt: {
-//         type: Number,
-//         default: null
-//     }
-// });
-//
-// let newTodo = new Todo({
-//     text: 'New test',
-// });
-//
-// newTodo.save().then((doc) => {
-//     console.log('Saved', doc);
-// }, (e) => {
-//     console.log('Unable to save');
-// });
+let app = express();
 
-// create User model
-let User = mongoose.model('User', {
-    email: {
-        type: String,
-        required: true,
-        minlength: 1,
-        trim: true
-    }
+// Set port for heroku || local
+const port = process.env.PORT || 3000;
+
+// Configure middleware
+app.use(bodyParser.json());
+
+app.post('/todos', (req, res) => {
+    let todo = new Todo({
+        text: req.body.text
+    });
+
+    todo.save().then((doc) => {
+        res.send(doc);
+    }, (e) => {
+        res.status(400).send(e);
+    });
 });
 
-let newUser = new User({
-    email: 'ben@henroben.co.uk'
-});
+// Start listening on port and print message
+let serverMsg = [
+    `Who's on port ${port}, Roz?`,
+    `I've been to port ${port} and back so often I've got frequent flyer miles!`,
+    `I'm listening, port ${port}`,
+    `We'll be right back after these messages on port ${port}`,
+    `You're not getting older, you're getting closer to death on port ${port}`
+];
 
-newUser.save().then((doc) => {
-    console.log('Saved', doc);
-}, (e) => {
-    console.log('Unable to save', e);
+let randomMsg = Math.round(Math.random() * (serverMsg.length - 1 - 0) + 0);
+
+app.listen(port, () => {
+    console.log(serverMsg[randomMsg]);
 });
