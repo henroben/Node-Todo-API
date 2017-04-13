@@ -8,6 +8,6 @@ let db = {
     localhost: 'mongodb://localhost:27017/TodoApp',
     mlab: `mongodb://${mongoConfig.username}:${mongoConfig.password}@ds159880.mlab.com:59880/todos-app`
 };
-mongoose.connect(db.mlab); // connect to mongo database
+mongoose.connect(db.localhost || db.mlab); // connect to mongo database
 
 module.exports = {mongoose};
